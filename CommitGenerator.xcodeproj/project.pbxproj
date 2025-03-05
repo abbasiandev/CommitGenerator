@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		EBDB005E2D7784550068EA23 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = EBDB005D2D7784550068EA23 /* ArgumentParser */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		EBABC19F2D7695E20064C4AD /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -19,7 +23,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		EBABC1A12D7695E20064C4AD /* CommitGenerator */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CommitGenerator; sourceTree = BUILT_PRODUCTS_DIR; };
+		EBABC1A12D7695E20064C4AD /* CommitGenerator */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = CommitGenerator; path = /Users/mahdiabbasian/Documents/mac/CommitGenerator/build/Debug/CommitGenerator; sourceTree = "<absolute>"; };
+		EBDB005B2D7780E20068EA23 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -35,6 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EBDB005E2D7784550068EA23 /* ArgumentParser in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -44,17 +50,9 @@
 		EBABC1982D7695E20064C4AD = {
 			isa = PBXGroup;
 			children = (
+				EBDB005B2D7780E20068EA23 /* README.md */,
 				EBABC1A32D7695E20064C4AD /* CommitGenerator */,
-				EBABC1A22D7695E20064C4AD /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		EBABC1A22D7695E20064C4AD /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				EBABC1A12D7695E20064C4AD /* CommitGenerator */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -77,6 +75,7 @@
 			);
 			name = CommitGenerator;
 			packageProductDependencies = (
+				EBDB005D2D7784550068EA23 /* ArgumentParser */,
 			);
 			productName = CommitGenerator;
 			productReference = EBABC1A12D7695E20064C4AD /* CommitGenerator */;
@@ -106,8 +105,11 @@
 			);
 			mainGroup = EBABC1982D7695E20064C4AD;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				EBDB005C2D7784550068EA23 /* XCRemoteSwiftPackageReference "swift-argument-parser" */,
+			);
 			preferredProjectObjectVersion = 77;
-			productRefGroup = EBABC1A22D7695E20064C4AD /* Products */;
+			productRefGroup = EBABC1982D7695E20064C4AD;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -289,6 +291,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		EBDB005C2D7784550068EA23 /* XCRemoteSwiftPackageReference "swift-argument-parser" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-argument-parser.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.5.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		EBDB005D2D7784550068EA23 /* ArgumentParser */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EBDB005C2D7784550068EA23 /* XCRemoteSwiftPackageReference "swift-argument-parser" */;
+			productName = ArgumentParser;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = EBABC1992D7695E20064C4AD /* Project object */;
 }
