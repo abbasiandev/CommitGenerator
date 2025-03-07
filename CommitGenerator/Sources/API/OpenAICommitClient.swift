@@ -24,7 +24,7 @@ public protocol APIClient {
 
 public class OpenAICommitClient: APIClient {
     private let baseURL = URL(string: "https://api.openai.com/v1/chat/completions")!
-    private var apiKey: String = "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"
+    private var apiKey: String
     private let model: String
     
     public init(apiKey: String, model: String = "gpt-3.5-turbo") {
@@ -39,18 +39,23 @@ public class OpenAICommitClient: APIClient {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         let parameters: [String: Any] = [
-            "model": "gpt-3.5-turbo",
+            "model": model,
             "messages": messages,
+            "response_format": ["type": "json_object"]
         ]
         
-        request.httpBody = try? JSONSerialization.data(withJSONObject: parameters)
+        request.httpBody = try JSONSerialization.data(withJSONObject: parameters)
         return request
     }
     
     public func generateCommitMessage(previousMessages: [ChatMessage], newUserMessage: String) async throws -> [CommitMessage] {
+        if apiKey.isEmpty || apiKey == "your_api_key" {
+            throw APIError.missingAPIKey
+        }
+        
         let systemMessage: [String: Any] = [
             "role": "system",
-            "content": "Create git commit messages following the conventional commit convention, ensuring they are clear and concise. For each change, provide an explanation. Based on the output from 'git diff --staged', craft a commit message and description. Use present tense, keep lines under 74 characters, and respond in English",
+            "content": "Create git commit messages following the conventional commit convention, ensuring they are clear and concise. For each change, provide an explanation. Based on the output from 'git diff --staged', craft a commit message and description. Use present tense, keep lines under 74 characters, and respond in JSON format like: [{\"message\": \"commit message\", \"details\": \"detailed explanation\"}]",
         ]
         
         let trainingMessage: [String: Any] = [
@@ -86,22 +91,18 @@ public class OpenAICommitClient: APIClient {
         let assistantMessage: [String: Any] = [
             "role": "assistant",
             "content": """
-                 [
                  {
-                     "message": "Change port variable case from lowercase port to uppercase PORT",
-                     "description": "The port variable is now named PORT, which improves consistency with the 
-                                     naming conventions as PORT is a constant. Support for an environment variable allows
-                                     the application to be more flexible as it can now run on any available port specified
-                                     via the process.env.PORT environment variable."
-                 },
-                 {
-                     "message": "Add support for process.env. PORT environment variable",
-                     "description": "The port variable is now named PORT, which improves consistency with the
-                                     naming conventions as PORT is a constant. Support for an environment variable allows
-                                     the application to be more flexible as it can now run on any available port specified
-                                     via the process.env. PORT environment variable."
+                   "commitMessages": [
+                     {
+                         "message": "refactor: change port variable case from lowercase to uppercase",
+                         "details": "The port variable is now named PORT, which improves consistency with the naming conventions as PORT is a constant."
+                     },
+                     {
+                         "message": "feat: add support for process.env.PORT environment variable",
+                         "details": "Support for an environment variable allows the application to be more flexible as it can now run on any available port specified via the process.env.PORT environment variable."
                      }
-                 ]
+                   ]
+                 }
                  """,
         ]
         
@@ -122,50 +123,77 @@ public class OpenAICommitClient: APIClient {
         let request = try createRequest(messages: messages)
         
         do {
-            let (data, _) = try await URLSession.shared.data(for: request)
-            let decoder = JSONDecoder()
-            let response = try decoder.decode(OpenAIResponse.self, from: data)
+            let (data, httpResponse) = try await URLSession.shared.data(for: request)
             
-            guard let responseText = response.choices.first?.message.content else {
+            guard let httpResponse = httpResponse as? HTTPURLResponse else {
                 throw APIError.invalidResponse
             }
-            return [
-                CommitMessage(
-                    message: responseText.trimmingCharacters(in: .whitespacesAndNewlines),
-                    description: "Automatically generated commit message"
-                )
-            ]
+            
+            if httpResponse.statusCode != 200 {
+                if let errorJSON = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                   let errorObject = errorJSON["error"] as? [String: Any],
+                   let errorMessage = errorObject["message"] as? String {
+                    throw NSError(domain: "OpenAIError", code: httpResponse.statusCode, userInfo: [NSLocalizedDescriptionKey: errorMessage])
+                }
+                throw APIError.invalidResponse
+            }
+            
+            print("Received API response. Status code: \(httpResponse.statusCode)")
+            
+            if let rawResponse = String(data: data, encoding: .utf8) {
+                print("Raw API Response: \(rawResponse)")
+            }
+            
+            let decoder = JSONDecoder()
+            let apiResponse = try decoder.decode(OpenAIResponse.self, from: data)
+            
+            guard let responseText = apiResponse.choices.first?.message.content else {
+                throw APIError.invalidResponse
+            }
             
             guard let jsonData = responseText.data(using: .utf8) else {
                 throw APIError.decodingError(NSError(domain: "Encoding", code: 0))
             }
-            return try decoder.decode([CommitMessage].self, from: jsonData)
             
+            do {
+                let wrapper = try decoder.decode(CommitMessagesWrapper.self, from: jsonData)
+                return wrapper.commitMessages
+            } catch {
+                
+                do {
+                    return try decoder.decode([CommitMessage].self, from: jsonData)
+                } catch {
+                    print("Error parsing response as structured JSON. Using fallback.")
+                    
+                    return [
+                        CommitMessage(
+                            message: "Auto-generated commit",
+                            details: responseText.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+                        )
+                    ]
+                }
+            }
         } catch {
+            print("API Error: \(error.localizedDescription)")
             throw error
         }
-        
     }
 }
     
 
-            
 struct OpenAIResponse: Decodable {
     let id: String
     let object: String
     let created: Int
     let model: String
-    let usage: OpenAIUsage
     let choices: [OpenAIChoice]
+    let usage: OpenAIUsage
 }
                          
 struct OpenAIChoice: Decodable {
     let message: OpenAIMessage
     let finish_reason: String
     let index: Int
-    var text: String {
-        return message.content
-    }
 }
                          
 struct OpenAIMessage: Decodable {
@@ -177,4 +205,8 @@ struct OpenAIUsage: Decodable {
     let prompt_tokens: Int
     let completion_tokens: Int
     let total_tokens: Int
+}
+
+struct CommitMessagesWrapper: Decodable {
+    let commitMessages: [CommitMessage]
 }

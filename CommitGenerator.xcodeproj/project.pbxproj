@@ -23,7 +23,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		EBABC1A12D7695E20064C4AD /* CommitGenerator */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = CommitGenerator; path = /Users/mahdiabbasian/Documents/mac/CommitGenerator/build/Debug/CommitGenerator; sourceTree = "<absolute>"; };
+		EBC4A0222D7AE084006DFD2E /* CommitGenerator */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CommitGenerator; sourceTree = BUILT_PRODUCTS_DIR; };
 		EBDB005B2D7780E20068EA23 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -52,6 +52,7 @@
 			children = (
 				EBDB005B2D7780E20068EA23 /* README.md */,
 				EBABC1A32D7695E20064C4AD /* CommitGenerator */,
+				EBC4A0222D7AE084006DFD2E /* CommitGenerator */,
 			);
 			sourceTree = "<group>";
 		};
@@ -78,7 +79,7 @@
 				EBDB005D2D7784550068EA23 /* ArgumentParser */,
 			);
 			productName = CommitGenerator;
-			productReference = EBABC1A12D7695E20064C4AD /* CommitGenerator */;
+			productReference = EBC4A0222D7AE084006DFD2E /* CommitGenerator */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */

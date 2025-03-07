@@ -18,8 +18,35 @@ public struct CommitMessage: Codable, CustomStringConvertible {
         """
     }
     
-    public init(message: String, description: String) {
+    public init(message: String, details: String) {
         self.message = message
-        self.details = description
+        self.details = details
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case message
+        case details
+        case description
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        message = try container.decode(String.self, forKey: .message)
+        
+        if container.contains(.details) {
+            details = try container.decode(String.self, forKey: .details)
+        } else if container.contains(.description) {
+            details = try container.decode(String.self, forKey: .description)
+        } else {
+            details = "No details provided"
+        }
+    }
+    
+    // Custom encoder implementation to match the decoder
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(message, forKey: .message)
+        try container.encode(details, forKey: .details)
     }
 }
