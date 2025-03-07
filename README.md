@@ -1,74 +1,50 @@
-//
-//  README.md
-//  CommitGenerator
-//
-//  Created by Mahdi Abbasian on 3/4/25.
-//
-
 # Commit Generator 🚀
 
-## Overview
-Commit Generator is an intelligent CLI tool that automatically generates meaningful git commit messages using AI, helping developers maintain clean and descriptive commit histories.
+## Git Commit Generator Command Line Tools Powered by AI
 
-## Prerequisites
-- Swift 5.5+
-- Xcode (optional)
-- OpenAI API Key
+Commit Generator is a simple command line tools that leverages the power of OpenAI's language models to automatically generate meaningful, descriptive, and consistent git commit messages. By analyzing the changes in your git repository, the application suggests commit messages that accurately reflect your code modifications, helping you maintain a clean, professional commit history with minimal effort.
 
-## Installation
+## 📋 Prerequisites
+- **Swift**: 5.5+
+- **OpenAI API Key**: Required for generating commit messages
 
-### Option 1: Clone and Build
+## 🔧 Installation
+
+### From Source
+
+1. Clone the repository:
+   ```zsh
+   git clone https://github.com/yourusername/commit-generator.git
+   ```
+
+2. Open the project in Xcode 16:
+   ```zsh
+   cd commit-generator
+   open CommitGenerator.xcodeproj
+   ```
+
+3. Build (⌘+B) and run (⌘+R)
+
+
+## 🚀 Getting Started
+
+1. **Launch the application** - Open Commit Generator from your directory
+2. **API Configuration** - Enter your OpenAI API key
+4. **Stage Files** - **Important**: You must have staged files in your git repository for to analyze changes
+5. **Generate Commits** - View the suggested commit messages based on your staged changes
+6. **Customize & Use** - Edit the suggestions if needed, then use them for your commits
+
+## ⚠️ Important Note
+
+The application requires at least one staged file in your git repository to function properly. Before generating commit suggestions:
+
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/commit-generator.git
-cd commit-generator
+# Stage your changes using git
+git add <filename>
 
-# Build the package
-swift build -c release
-
-# Install the executable
-cp .build/release/commit-generator /usr/local/bin/commit-generator
+# Or stage all changes
+git add .
 ```
 
-### Option 2: Swift Package Manager
-Add to your `Package.swift`:
-```swift
-.package(url: "https://github.com/yourusername/commit-generator", from: "1.0.0")
-```
-
-## Usage
-
-### Set API Key
-```bash
-# Option 1: Environment Variable
-export OPENAI_API_KEY='your-openai-api-key'
-
-# Option 2: CLI Argument
-commit-generator --api-key sk-your-openai-key
-```
-
-### Basic Usage
-```bash
-# In your git repository
-commit-generator
-
-# Specify a different directory
-commit-generator --directory /path/to/repo
-```
-
-## Project Structure
-- `Sources/CommitGenerator/`
-  - `API/`: OpenAI API communication
-  - `Git/`: Git repository interactions
-  - `Shell/`: Command execution utilities
-  - `Models/`: Data models and error definitions
-
-## Contributing
-1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
-
-## License
-MIT License
+Without staged files, the commit generator cannot analyze your changes to suggest appropriate commit messages.
+This information is then processed through OpenAI's language models to generate commit messages that adhere to best practices while accurately describing your changes.
