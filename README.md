@@ -14,12 +14,12 @@ Commit Generator is a simple command line tools that leverages the power of Open
 
 1. Clone the repository:
    ```zsh
-   git clone https://github.com/yourusername/commit-generator.git
+   git clone https://github.com/MahdiAbbasian/CommitGenerator.git
    ```
 
 2. Open the project in Xcode 16:
    ```zsh
-   cd commit-generator
+   cd CommitGenerator
    open CommitGenerator.xcodeproj
    ```
 
