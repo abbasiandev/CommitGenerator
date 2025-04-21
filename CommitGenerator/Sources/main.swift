@@ -7,7 +7,7 @@
 
 import Foundation
 
-let apiKey = "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"
+let apiKey = "your api key"
 
 let directory = "/Users/mahdiabbasian/Documents/Android/Workspace/flutter_poolakey"
 let gitUtility = GitDiffUtility(directoryPath: directory)
